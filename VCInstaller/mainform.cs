@@ -105,8 +105,11 @@ namespace VCInstaller
 
         private void btn_search_show_Click(object sender, EventArgs e)
         {
-            installer_files_full_path = Directory.GetFiles(Environment.CurrentDirectory, "*.exe", SearchOption.TopDirectoryOnly);
+
+            installer_files_full_path = Directory.GetFiles(Environment.CurrentDirectory, "*.exe", SearchOption.TopDirectoryOnly).Except(Directory.GetFiles(Environment.CurrentDirectory, Application.ProductName + "*" + ".exe") ).ToArray() ;
             installer_files = new string[installer_files_full_path.Length];
+
+            lbl_details.Text = string.Empty;
 
             chk_file_list.Items.Clear();            
 
@@ -115,7 +118,6 @@ namespace VCInstaller
                 installer_files[i] = Path.GetFileName(installer_files_full_path[i]);
             }
 
-
             for (int i = 0 ; i < installer_files_full_path.Length ; i++ )
             {
                 chk_file_list.Items.Add(installer_files[i]);
@@ -123,9 +125,23 @@ namespace VCInstaller
 
             lbl_details.Text += " " + installer_files_full_path.Length;
 
-            btn_install.Enabled = true;
-            radio_select_all.Enabled = true;
-            radio_select_none.Enabled = true;       
+            if (chk_file_list.Items.Count > 0)
+            {
+                btn_install.Enabled = true;
+                radio_select_all.Enabled = true;
+                radio_select_none.Enabled = true;
+            }
+            else
+            {
+                btn_install.Enabled = false;
+                radio_select_all.Enabled = false;
+                radio_select_none.Enabled = false;
+
+                notifyIcon1.Text = "Warning!";
+                notifyIcon1.BalloonTipText = " No Executable files were found!. Check if the tool and the files are in the same folder";
+                notifyIcon1.ShowBalloonTip(1000);
+            }
+   
         }
 
         private void radio_select_all_CheckedChanged(object sender, EventArgs e)
