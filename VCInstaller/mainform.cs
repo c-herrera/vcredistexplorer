@@ -26,6 +26,8 @@ namespace VCInstaller
         string arguments2013;
         string arguments2015;
 
+        SimpleLogger logger; // Will create a fresh new log file
+
         string log;
         string info;
         public frm_installer()
@@ -35,7 +37,12 @@ namespace VCInstaller
 
         private void frm_installer_Load(object sender, EventArgs e)
         {
-            if ( WindowsIdentity.GetCurrent().Owner == WindowsIdentity.GetCurrent().User )   // Check for Admin privileges   
+            logger = new SimpleLogger();
+
+            logger.Info("Application start " + this.ProductName );
+            logger.Trace("Verifiy if tool can run in Admin mode ...");
+
+            if (WindowsIdentity.GetCurrent().Owner == WindowsIdentity.GetCurrent().User)   // Check for Admin privileges   
             {
                 try
                 {
@@ -45,11 +52,12 @@ namespace VCInstaller
                     info.Verb = "runas";   // invoke UAC prompt
                     Process.Start(info);
                 }
-                catch ( Win32Exception ex )
+                catch (Win32Exception ex)
                 {
-                    if ( ex.NativeErrorCode == 1223 ) //The operation was canceled by the user.
+                    if (ex.NativeErrorCode == 1223) //The operation was canceled by the user.
                     {
                         MessageBox.Show("Why did you not selected Yes?", "WHY?", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        logger.Error("Application was not able to run in admin mode: Load event"  );
                         Application.Exit();
                     }
                     else
@@ -61,6 +69,8 @@ namespace VCInstaller
             {
                 //    MessageBox.Show("I have admin privileges :-)");
             }
+
+            logger.Info("Admin mode enabled, seem ok !");
 
             radio_select_all.Enabled = false;
             radio_select_none.Enabled = false;
@@ -82,6 +92,8 @@ namespace VCInstaller
 
             info = string.Empty;
 
+            logger.Trace("Application vars : init was ok!");
+
             info += "VCINstaller v" + Application.ProductVersion + Environment.NewLine;
             info += "How to use this tool :" + Environment.NewLine;
             info += "1 . Copy all your vcredist packages into a folder, and copy this tool too." + Environment.NewLine;
@@ -96,20 +108,24 @@ namespace VCInstaller
 
             txt_info.Text = info;
 
+            logger.Trace("Application about infor : init was ok!");
+
         }
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
+            logger.Trace("Application Exit!");
             Application.Exit();
         }
 
         private void btn_search_show_Click(object sender, EventArgs e)
         {
-
+            logger.Info("Searching for files");
             installer_files_full_path = Directory.GetFiles(Environment.CurrentDirectory, "*.exe", SearchOption.TopDirectoryOnly).Except(Directory.GetFiles(Environment.CurrentDirectory, Application.ProductName + "*" + ".exe") ).ToArray() ;
             installer_files = new string[installer_files_full_path.Length];
 
             lbl_details.Text = string.Empty;
+
 
             chk_file_list.Items.Clear();            
 

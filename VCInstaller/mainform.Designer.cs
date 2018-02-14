@@ -212,6 +212,7 @@
             this.Controls.Add(this.btn_exit);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "frm_installer";
             this.Text = "VC Installer";
             this.Load += new System.EventHandler(this.frm_installer_Load);
