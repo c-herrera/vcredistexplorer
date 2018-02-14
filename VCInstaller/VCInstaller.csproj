@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="log_basic.cs" />
     <Compile Include="mainform.cs">
       <SubType>Form</SubType>
     </Compile>
