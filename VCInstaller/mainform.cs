@@ -13,11 +13,19 @@ using System.Windows.Forms;
 
 namespace VCInstaller
 {
+    enum ArgumentsbyVCYear
+    {
+        args2005, args2008, args_2010, args2012, args2013, args_2015
+    };
+
+
     public partial class frm_installer : Form
     {
         string[] installer_files_full_path;
         string[] installer_files;
         string[] selected_files;
+
+        string[] installer_args_by_pkg;
 
         string arguments2005;
         string arguments2008;
@@ -42,39 +50,49 @@ namespace VCInstaller
             logger.Info("Application start " + this.ProductName );
             logger.Trace("Verifiy if tool can run in Admin mode ...");
 
-            if (WindowsIdentity.GetCurrent().Owner == WindowsIdentity.GetCurrent().User)   // Check for Admin privileges   
-            {
-                try
-                {
-                    this.Visible = false;
-                    ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath); // my own .exe
-                    info.UseShellExecute = true;
-                    info.Verb = "runas";   // invoke UAC prompt
-                    Process.Start(info);
-                }
-                catch (Win32Exception ex)
-                {
-                    if (ex.NativeErrorCode == 1223) //The operation was canceled by the user.
-                    {
-                        MessageBox.Show("Why did you not selected Yes?", "WHY?", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                        logger.Error("Application was not able to run in admin mode: Load event");
-                        Application.Exit();
-                    }
-                    else
-                        throw new Exception("Something went wrong :-(");
-                }
-                Application.Exit();
-            }
-            else
-            {
-                MessageBox.Show("I have admin privileges :-)");
-            }
+            //if (WindowsIdentity.GetCurrent().Owner == WindowsIdentity.GetCurrent().User)   // Check for Admin privileges   
+            //{
+            //    try
+            //    {
+            //        this.Visible = false;
+            //        ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath); // my own .exe
+            //        info.UseShellExecute = true;
+            //        info.Verb = "runas";   // invoke UAC prompt
+            //        Process.Start(info);
+            //    }
+            //    catch (Win32Exception ex)
+            //    {
+            //        if (ex.NativeErrorCode == 1223) //The operation was canceled by the user.
+            //        {
+            //            MessageBox.Show("Why did you not selected Yes?", "WHY?", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            //            logger.Error("Application was not able to run in admin mode: Load event");
+            //            Application.Exit();
+            //        }
+            //        else
+            //            throw new Exception("Something went wrong :-(");
+            //    }
+            //    Application.Exit();
+            //}
+            //else
+            //{
+            //    //MessageBox.Show("I have admin privileges :-)");
+            //}
 
             logger.Info("Admin mode enabled, seem ok !");
 
             radio_select_all.Enabled = false;
             radio_select_none.Enabled = false;
             btn_install.Enabled = false;
+
+            installer_args_by_pkg = new string[] 
+            {
+                "/q",
+                "/qb",
+                "/passive /norestart",
+                "/passive /norestart",
+                "/install /passive /norestart",
+                "/install /passive /norestart"
+            };
 
             arguments2005 = "/q";
             arguments2008 = "/qb";
@@ -92,7 +110,7 @@ namespace VCInstaller
 
             info = string.Empty;
 
-            logger.Trace("Application vars : init was ok!");
+            logger.Trace("Application var init reached.");
 
             info += "VCINstaller v" + Application.ProductVersion + Environment.NewLine;
             info += "How to use this tool :" + Environment.NewLine;
@@ -108,7 +126,7 @@ namespace VCInstaller
 
             txt_info.Text = info;
 
-            logger.Trace("Application about infor : init was ok!");
+            logger.Trace("Application reached end of load event");
 
         }
 
@@ -181,6 +199,7 @@ namespace VCInstaller
         private void btn_install_Click(object sender, EventArgs e)
         {
             int inner = 0;
+            int selected = 0;
             selected_files = new string[chk_file_list.Items.Count];
 
             logger.Trace("Starting the install process :");
@@ -189,10 +208,11 @@ namespace VCInstaller
                 if ( chk_file_list.GetItemChecked(i) == true )
                 {
                     selected_files[inner++] = chk_file_list.Items[i].ToString();
+                    selected++;
                 }
             }
 
-            logger.Info("Installing " + chk_file_list.Items.Count + " selected items");
+            logger.Info("Installing " + selected + " selected items");
             logger.Info("System version reported is : " + Environment.OSVersion);
                         
             for ( int i = 0 ; i < chk_file_list.Items.Count ; i++ )
@@ -205,73 +225,71 @@ namespace VCInstaller
                 {
                     Process vcinstaller = new Process();
                     vcinstaller.StartInfo.FileName = selected_files[i];
-                    vcinstaller.StartInfo.Arguments = arguments2005;
+                    vcinstaller.StartInfo.Arguments = installer_args_by_pkg[(int)ArgumentsbyVCYear.args2005];
                     vcinstaller.Start();
                     vcinstaller.WaitForExit();
 
-                    logger.Info("Installed " + selected_files[i] + " with argument " + arguments2005);
+                    logger.Info("Installed " + selected_files[i] + " with argument " + installer_args_by_pkg[(int) ArgumentsbyVCYear.args2005]);
                 }
 
                 if ( selected_files[i].Contains("2008") )
                 {
                     Process vcinstaller = new Process();
                     vcinstaller.StartInfo.FileName = selected_files[i];
-                    vcinstaller.StartInfo.Arguments = arguments2008;
+                    vcinstaller.StartInfo.Arguments = installer_args_by_pkg[(int)ArgumentsbyVCYear.args2008]; 
                     vcinstaller.Start();
                     vcinstaller.WaitForExit();
 
-                    logger.Info("Installed " + selected_files[i] + " with argument " + arguments2008);
+                    logger.Info("Installed " + selected_files[i] + " with argument " + installer_args_by_pkg[(int)ArgumentsbyVCYear.args2008]);
                 }
 
                 if ( selected_files[i].Contains("2010") )
                 {
                     Process vcinstaller = new Process();
                     vcinstaller.StartInfo.FileName = selected_files[i];
-                    vcinstaller.StartInfo.Arguments = arguments2010;
+                    vcinstaller.StartInfo.Arguments = installer_args_by_pkg[(int)ArgumentsbyVCYear.args_2010];
                     vcinstaller.Start();
                     vcinstaller.WaitForExit();
 
-                    logger.Info("Installed " + selected_files[i] + " with argument " + arguments2010);
+                    logger.Info("Installed " + selected_files[i] + " with argument " + installer_args_by_pkg[(int)ArgumentsbyVCYear.args_2010]);
                 }
 
                 if ( selected_files[i].Contains("2012") )
                 {
                     Process vcinstaller = new Process();
                     vcinstaller.StartInfo.FileName = selected_files[i];
-                    vcinstaller.StartInfo.Arguments = arguments2012;
+                    vcinstaller.StartInfo.Arguments = installer_args_by_pkg[(int)ArgumentsbyVCYear.args2012];
                     vcinstaller.Start();
                     vcinstaller.WaitForExit();
 
-                    logger.Info("Installed " + selected_files[i] + " with argument " + arguments2012);
+                    logger.Info("Installed " + selected_files[i] + " with argument " + installer_args_by_pkg[(int)ArgumentsbyVCYear.args2012]);
                 }
 
                 if ( selected_files[i].Contains("2013") )
                 {
                     Process vcinstaller = new Process();
                     vcinstaller.StartInfo.FileName = selected_files[i];
-                    vcinstaller.StartInfo.Arguments = arguments2013;
+                    vcinstaller.StartInfo.Arguments = installer_args_by_pkg[(int)ArgumentsbyVCYear.args2013];
                     vcinstaller.Start();
                     vcinstaller.WaitForExit();
 
-                    logger.Info("Installed " + selected_files[i] + " with argument " + arguments2013);
+                    logger.Info("Installed " + selected_files[i] + " with argument " + installer_args_by_pkg[(int)ArgumentsbyVCYear.args2013]);
                 }
 
                 if ( selected_files[i].Contains("2015") )
                 {
                     Process vcinstaller = new Process();
                     vcinstaller.StartInfo.FileName = selected_files[i];
-                    vcinstaller.StartInfo.Arguments = arguments2015;
+                    vcinstaller.StartInfo.Arguments = installer_args_by_pkg[(int)ArgumentsbyVCYear.args_2015];
                     vcinstaller.Start();
                     vcinstaller.WaitForExit();
 
-                    logger.Info("Installed " + selected_files[i] + " with argument " + arguments2015);
+                    logger.Info("Installed " + selected_files[i] + " with argument " + installer_args_by_pkg[(int)ArgumentsbyVCYear.args_2015]);
                 }
 
             }
 
             logger.Info("Installation process is done");
-
-
 
             notifyIcon1.Text = "Process is finished";
             notifyIcon1.BalloonTipText = "Process is done, check in Control Panel or Setting for all the installed packages";
