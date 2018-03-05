@@ -43,6 +43,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txt_info = new System.Windows.Forms.TextBox();
             this.btn_exit = new System.Windows.Forms.Button();
+            this.btn__view_log = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.grp_options.SuspendLayout();
@@ -67,6 +68,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btn__view_log);
             this.tabPage1.Controls.Add(this.chk_file_list);
             this.tabPage1.Controls.Add(this.btn_install);
             this.tabPage1.Controls.Add(this.grp_options);
@@ -98,7 +100,7 @@
             this.btn_install.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_install.Image = ((System.Drawing.Image)(resources.GetObject("btn_install.Image")));
             this.btn_install.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_install.Location = new System.Drawing.Point(198, 230);
+            this.btn_install.Location = new System.Drawing.Point(352, 175);
             this.btn_install.Name = "btn_install";
             this.btn_install.Size = new System.Drawing.Size(128, 23);
             this.btn_install.TabIndex = 9;
@@ -111,7 +113,7 @@
             this.grp_options.Controls.Add(this.radio_select_none);
             this.grp_options.Controls.Add(this.radio_select_all);
             this.grp_options.Font = new System.Drawing.Font("Intel Clear", 8.249999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grp_options.Location = new System.Drawing.Point(351, 82);
+            this.grp_options.Location = new System.Drawing.Point(351, 68);
             this.grp_options.Name = "grp_options";
             this.grp_options.Size = new System.Drawing.Size(130, 90);
             this.grp_options.TabIndex = 8;
@@ -128,7 +130,7 @@
             this.radio_select_none.TabStop = true;
             this.radio_select_none.Text = "Select None";
             this.radio_select_none.UseVisualStyleBackColor = true;
-            this.radio_select_none.Click += new System.EventHandler(this.radio_select_none_CheckedChanged);
+            this.radio_select_none.Click += new System.EventHandler(this.radio_select_none_Click);
             // 
             // radio_select_all
             // 
@@ -140,13 +142,13 @@
             this.radio_select_all.TabStop = true;
             this.radio_select_all.Text = "Select All";
             this.radio_select_all.UseVisualStyleBackColor = true;
-            this.radio_select_all.Click += new System.EventHandler(this.radio_select_all_CheckedChanged);
+            this.radio_select_all.Click += new System.EventHandler(this.radio_select_all_Click);
             // 
             // lbl_details
             // 
             this.lbl_details.AutoSize = true;
             this.lbl_details.Font = new System.Drawing.Font("Intel Clear", 8.249999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_details.Location = new System.Drawing.Point(348, 54);
+            this.lbl_details.Location = new System.Drawing.Point(348, 40);
             this.lbl_details.Name = "lbl_details";
             this.lbl_details.Size = new System.Drawing.Size(45, 19);
             this.lbl_details.TabIndex = 6;
@@ -203,6 +205,17 @@
             this.btn_exit.UseVisualStyleBackColor = true;
             this.btn_exit.Click += new System.EventHandler(this.btn_exit_Click);
             // 
+            // btn__view_log
+            // 
+            this.btn__view_log.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn__view_log.Location = new System.Drawing.Point(351, 229);
+            this.btn__view_log.Name = "btn__view_log";
+            this.btn__view_log.Size = new System.Drawing.Size(129, 23);
+            this.btn__view_log.TabIndex = 11;
+            this.btn__view_log.Text = "View log";
+            this.btn__view_log.UseVisualStyleBackColor = true;
+            this.btn__view_log.Click += new System.EventHandler(this.btn__view_log_Click);
+            // 
             // frm_installer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -241,6 +254,7 @@
         private System.Windows.Forms.Button btn_search_show;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox txt_info;
+        private System.Windows.Forms.Button btn__view_log;
     }
 }
 
