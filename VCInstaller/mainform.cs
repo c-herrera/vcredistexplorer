@@ -214,7 +214,7 @@ namespace VCInstaller
             {
                 if ( chk_file_list.GetItemChecked(i) == true )
                 {
-                    selected_files[inner++] = chk_file_list.Items[i].ToString();
+                    selected_files[inner++] = ".\\" + chk_file_list.Items[i].ToString();
                     selected++;
                 }
             }
@@ -316,10 +316,12 @@ namespace VCInstaller
                     //logger.Info("Installed " + selected_files[i] + " with argument " + installer_args_by_pkg[(int)ArgumentsbyVCYear.args_2015]);
                 }
 
-                
+                bool executed = false;
                 vcinstallers.StartInfo.FileName = exename;
                 vcinstallers.StartInfo.Arguments = exeargs;
-                vcinstallers.Start();
+                executed = vcinstallers.Start();
+                if (executed == false)
+                    logger.Error("Instaler didnt work :" + exename + " " + exeargs);
                 vcinstallers.WaitForExit();
                 //vcinstallers.Dispose();
                 logger.Info(infolog);
