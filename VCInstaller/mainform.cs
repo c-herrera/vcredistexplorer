@@ -28,12 +28,12 @@ namespace VCInstaller
         string[] selected_files;
 
         string[] installer_args_by_pkg;
-
-
         SimpleLogger logger; // Will create a fresh new log file
-
-        string log;
         string info;
+
+        /// <summary>
+        /// Construct 
+        /// </summary>
         public frm_installer()
         {
             InitializeComponent();
@@ -41,9 +41,7 @@ namespace VCInstaller
 
         private void frm_installer_Load(object sender, EventArgs e)
         {
-
             logger = new SimpleLogger();
-
             logger.Info("Application start " + this.ProductName );
             logger.Trace("Verifiy if tool can run in Admin mode ...");
 
@@ -66,16 +64,20 @@ namespace VCInstaller
                         Application.Exit();
                     }
                     else
+                    {
+                        logger.Warning("The user cancelled the admin elevation or another unexpected error.");
                         throw new Exception("Something went wrong :-(");
+                    }
+
                 }
+                logger.Trace("Application bail out!");
                 Application.Exit();
             }
             else
             {
                 //MessageBox.Show("I have admin privileges :-)");
+                logger.Info("I have admin privileges :-)");
             }
-
-            logger.Info("Admin mode enabled, seem ok !");
 
             radio_select_all.Enabled = false;
             radio_select_none.Enabled = false;
@@ -96,8 +98,6 @@ namespace VCInstaller
             notifyIcon1.BalloonTipTitle = "VC INSTALLER"; 
             notifyIcon1.Icon = this.Icon;
 
-            log = string.Empty;
-
             info = string.Empty;
 
             logger.Trace("Application var init reached.");
@@ -115,9 +115,7 @@ namespace VCInstaller
             info += "Tool developer : C. A. Herrera" + Environment.NewLine;
 
             txt_info.Text = info;
-
             logger.Trace("Application reached end of load event");
-
         }
 
         private void btn_exit_Click(object sender, EventArgs e)
@@ -301,24 +299,22 @@ namespace VCInstaller
         private void btn__view_log_Click(object sender, EventArgs e)
         {
             Process viewtextprog = new Process();
-            if (File.Exists(Assembly.GetExecutingAssembly().GetName().Name + ".log"))
-            {
-                logger.Trace("Event log is being reviewed. Control : " + this.btn__view_log.ToString());
-                viewtextprog.StartInfo.FileName = "notepad";
-                viewtextprog.StartInfo.Arguments = Assembly.GetExecutingAssembly().GetName().Name + ".log";
-                viewtextprog.Start();                
-            }
-
             try
             {
+                if (File.Exists(Assembly.GetExecutingAssembly().GetName().Name + ".log"))
+                {
+                    logger.Trace("Event log is being reviewed. Control : " + this.btn__view_log.ToString());
+                    viewtextprog.StartInfo.FileName = "notepad";
+                    viewtextprog.StartInfo.Arguments = Assembly.GetExecutingAssembly().GetName().Name + ".log";
+                    viewtextprog.Start();
+                }
                 viewtextprog.Dispose();
             }
             catch(Exception excp)
             {
+                logger.Debug("Exception raised :" + excp.Message);
                 logger.Error("Error on disposing resources "  + this.btn__view_log.ToString());
             }
         }
-
-
     }
 }

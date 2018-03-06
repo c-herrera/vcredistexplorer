@@ -16,6 +16,15 @@ namespace VCInstaller
         private string Filename;
 
         /// <summary>
+        /// Supported log level
+        /// </summary>
+        [Flags]
+        private enum LogLevel
+        {
+            TRACE,INFO,DEBUG,WARNING,ERROR,FATAL
+        };
+
+        /// <summary>
         /// Initialize a new instance of SimpleLogger class.
         /// Log file will be created automatically if not yet exists, else it can be either a fresh new file or append to the existing file.
         /// Default is create a fresh new log file.
@@ -141,7 +150,8 @@ namespace VCInstaller
             {
                 using (StreamWriter Writer = new StreamWriter(Filename, append, Encoding.UTF8))
                 {
-                    if (text != "") Writer.WriteLine(text);
+                    if (text != string.Empty)
+                        Writer.WriteLine(text);
                 }
             }
             catch
@@ -150,18 +160,6 @@ namespace VCInstaller
             }
         }
 
-        /// <summary>
-        /// Supported log level
-        /// </summary>
-        [Flags]
-        private enum LogLevel
-        {
-            TRACE,
-            INFO,
-            DEBUG,
-            WARNING,
-            ERROR,
-            FATAL
-        }
+
     }
 }
